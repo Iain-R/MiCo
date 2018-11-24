@@ -25,7 +25,26 @@ with open('poi.csv', newline='') as csvfile:
             Data.append((float(row[5]),float(row[6]),float(row[7])))
     print("There are ",len(Data),"Points")
 
+
+Seg = []
+with open('8seg.csv', newline='') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    for row in spamreader:
+        if row[0]=="Latitude":
+            print("Starting Scrape")
+        else:
+            Seg.append(row)
+    print("There are ",len(Data),"Points")
+Seg1 = []
+
+for i in Seg:
+    if i == 1:
+        Seg1.append(Data[i])
+
+
+
 def Distance(p1,p2):
+    
     return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
 
 def GetDist(Data):
