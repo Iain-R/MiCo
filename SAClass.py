@@ -31,6 +31,7 @@ class SimAnneal:
             self.Path = list(self.N)
             self.Pos = pts
         random.shuffle(self.Path)
+        self.Randomcost = self.Cost()
             
         
     def Distance(self,p1, p2):
@@ -66,7 +67,7 @@ class SimAnneal:
         BestArr = [Best]
         for i in range(run):
             if i%10000==0:
-                print(i/run*100,"%")
+                print(int(i/run*100),"%")
             delta,neighbour = self.ChooseNeigh()
             if delta < 0 or random.random() < math.exp(-delta/T):
                 self.MoveToNeigh(neighbour)
@@ -83,7 +84,10 @@ class SimAnneal:
         print("Total Distance Travelled is:", self.Cost())
 
     def printcost(self):
-        print (self.Cost())
+        print ("SA Cost:",self.Cost())
+        print("Random Walk", self.Randomcost)
+        print(self.Cost()/self.Randomcost *100,"% Distance travelled compared to a random strategy")
+        
     def getpath(self):
         return(self.Path)
     def printpath(self):

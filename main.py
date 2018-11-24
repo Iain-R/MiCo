@@ -5,6 +5,12 @@ Created on Sat Nov 24 15:01:40 2018
 @author: Iain
 """
 
+
+
+"""
+
+What about a resoource constrained DP ??
+"""
 from SAClass import SimAnneal
 import math
 
@@ -27,9 +33,8 @@ def GetDist(Data):
     
 
 A = SimAnneal(GetDist(Data),Data,False)
-A.RunSA(1000000,50000,0.99985)
+A.RunSA(1000000,90000,0.99995)
 #A.RunSA(500000,50000,0.9998)
-A.printpath()
+#A.printpath()
+A.printcost()
 A.Showroute()
-
-

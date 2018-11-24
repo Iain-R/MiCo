@@ -64,7 +64,7 @@ if len(sys.argv) < 2:
     print('Usage: tsp.py npoints')
     # exit(1)
 # n = int(sys.argv[1])
-n = int(20)
+n = int(100)
 # Create n random points
 
 random.seed(4)
