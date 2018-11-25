@@ -35,20 +35,29 @@ with open('8seg.csv', newline='') as csvfile:
         else:
             Seg.append(row)
     print("There are ",len(Data),"Points")
-Seg1 = []
-
-for i in Seg:
-    if i == 1:
-        Seg1.append(Data[i])
-
+DistKM ={}
+with open('distances.csv', newline='') as csvfile:
+    j=-1
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    for row in spamreader:
+        j+=1
+        if row[0]=="Latitude":
+            print("Starting Scrape")
+        else:
+#            print(row[0])
+            for i in range(len(row)):
+                DistKM[i,j]= float(row[i])
+#                print(float(row[i]))
+print(DistKM[0,0])
+            
 
 
 def Distance(p1,p2):
     
-    return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
+    return DistKM[p1,p2]
 
 def GetDist(Data):
-    return [[Distance(Data[i],Data[j]) for j in range(len(Data))]for i in range(len(Data))]
+    return [[Distance(i,j) for j in range(len(Data))]for i in range(len(Data))]
     
 
 A = SimAnneal(GetDist(Data),Data,False)

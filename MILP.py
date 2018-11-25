@@ -16,16 +16,6 @@ import itertools
 from gurobipy import *
 
 # Callback - use lazy constraints to eliminate sub-tours
-
-def ParseData(data):
-    n = len(data)
-    
-
-    return (dist,n)
-
-
-
-
 def subtourelim(model, where):
     if where == GRB.Callback.MIPSOL:
         # make a list of edges selected in the solution
@@ -60,10 +50,7 @@ def subtour(edges):
 
 # Parse argument
 
-if len(sys.argv) < 2:
-    print('Usage: tsp.py npoints')
-    # exit(1)
-# n = int(sys.argv[1])
+
 n = int(100)
 # Create n random points
 
@@ -83,15 +70,6 @@ m = Model()
 vars = m.addVars(dist.keys(), obj=dist, vtype=GRB.BINARY, name='e')
 for i,j in vars.keys():
     vars[j,i] = vars[i,j] # edge in opposite direction
-
-# You could use Python looping constructs and m.addVar() to create
-# these decision variables instead.  The following would be equivalent
-# to the preceding m.addVars() call...
-
-# vars = tupledict()
-# for i,j in dist.keys():
-#   vars[i,j] = m.addVar(obj=dist[i,j], vtype=GRB.BINARY,
-#                        name='e[%d,%d]'%(i,j))
 
 
 # Add degree-2 constraint

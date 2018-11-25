@@ -85,6 +85,8 @@ class SimAnneal:
 
     def printcost(self):
         print ("SA Cost:",self.Cost())
+        print("Total Path = ", self.Cost()+(1.852**2)*math.pi*self.nLoc,'km')
+        print('Flight Time = ', (self.Cost()+(1.852**2)*math.pi*self.nLoc)/(55*1.85),'hours')
         print("Random Walk", self.Randomcost)
         print(self.Cost()/self.Randomcost *100,"% Distance travelled compared to a random strategy")
         
