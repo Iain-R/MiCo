@@ -49,7 +49,27 @@ with open('distances.csv', newline='') as csvfile:
                 DistKM[i,j]= float(row[i])
 #                print(float(row[i]))
 print(DistKM[0,0])
-            
+Seg1 = []
+for i in range(len(Seg)):
+#    print(i)
+    if Seg[i]== '1':
+        Seg1.append(Data[i])
+#        for j in range(len(Seg1)):
+#            seg1Dist[i,j]:
+
+def Distance(p1, p2):
+    """Calculates the Distance between two points Distance(p1,p2)--> R"""
+    
+    return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
+#This just 
+nLoc = len(Seg1)
+N = range(len(Seg1))
+print("Calculating {} points".format(nLoc))
+Square = 100
+#random.seed(nLoc)
+Pos = [(random.randint(0,Square), random.randint(0,Square)) for i in N]
+Data = [[Distance(Seg1[i],Seg1[j]) for j in N] for i in N]
+#Data = Distance
 
 
 def Distance(p1,p2):
@@ -60,7 +80,7 @@ def GetDist(Data):
     return [[Distance(i,j) for j in range(len(Data))]for i in range(len(Data))]
     
 
-A = SimAnneal(GetDist(Data),Data,False)
+A = SimAnneal(GetDist(Seg1),Seg1,False)
 A.RunSA(1000000,90000,0.99995)
 #A.RunSA(500000,50000,0.9998)
 #A.printpath()

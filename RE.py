@@ -12,8 +12,9 @@ import math
 import random
 import itertools
 from gurobipy import *
+import pylab
 
-Flight = 2
+
 
 import csv
 Data = []
@@ -53,7 +54,7 @@ with open('distances.csv', newline='') as csvfile:
             for i in range(len(row)):
                 DistKM[i,j]= float(row[i])
 #                print(float(row[i]))
-
+#print(Data[1])
 def SegmentSplit(a):
     a = str(a)
     Seg1 = []
@@ -73,6 +74,8 @@ def SegmentSplit(a):
                         seg1Dist[q,k] = DistKM[i,j]
     return (Seg1,seg1Dist)
 
+COST = 0
+TIME = 0
 for i in range(31):
     Flight = i+1
     n = int(len(SegmentSplit(Flight)[0]))
@@ -80,6 +83,7 @@ for i in range(31):
     seg1Dist = SegmentSplit(Flight)[1]
     Seg1 = SegmentSplit(Flight)[0]
     
+#    print(Seg1)
     # Callback - use lazy constraints to eliminate sub-tours
     def subtourelim(model, where):
         if where == GRB.Callback.MIPSOL:
@@ -138,16 +142,28 @@ for i in range(31):
     print('Route Planned')
     print('Optimal tour: %s' % str(tour))
     print('Optimal cost: %g' % m.objVal)
+    print('Time in Transit', m.objVal/(1.85*55))
+    print('Optimal Distance',(m.objVal+(n*(math.pi*(1.852**2)))))
+    COST+=m.objVal
+    TIME +=  m.objVal/(1.85*55)
     print('Time : ',(m.objVal+(n*(math.pi*(1.852**2))))/(1.85*55))
     print('')
     output = []
     for i in tour:
         output.append(Seg1[i])
     import json
-    with open('Flight{}.json'.format(Flight), 'w') as outfile:
-        a = []
+    
+    with open('Flight{}seg32.json'.format(Flight), 'w') as outfile:
+        a = [{"Longitude" : "151.8029","Latitude" : "-25.0138"}]
+        
         for i in output:
+            
             a.append({"Longitude" : str(i[1]) ,"Latitude" : str(i[0]) })
             
-    #       json.dump({"Longitude" : str(i[0]) ,"Latitude" : str(i[1]) },outfile)
+#           json.dump({"Longitude" : str(i[0]) ,"Latitude" : str(i[1]) },outfile)
         json.dump(a,outfile)
+#    pylab.plot([Seg1[tour[i]][1] for i in range(-1,n-1)], [Seg1[tour[i]][0] for i in range(-1,n-1)])
+#    pylab.xlabel('Latitude(Degrees)')
+#    pylab.ylabel('Longitude (Degrees)')
+#    pylab.title('MIP Technique')
+##    pylab.show()

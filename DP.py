@@ -18,7 +18,8 @@ End Condition -> All nodes visited
 import math
 import random
 import pylab
-
+import sys 
+sys.setrecursionlimit(4500)
 
 Data = []
 import csv
@@ -73,38 +74,47 @@ def Distance(p1, p2):
     
     return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
 #This just 
-nLoc = len(Seg1)
-N = range(len(Seg1))
+nLoc = len()
+N = range(len(Data))
 print("Calculating {} points".format(nLoc))
 Square = 100
 #random.seed(nLoc)
 Pos = [(random.randint(0,Square), random.randint(0,Square)) for i in N]
-Data = [[Distance(Seg1[i],Seg1[j]) for j in N] for i in N]
+#Data = [[Distance(Seg1[i],Seg1[j]) for j in N] for i in N]
 #Data = Distance
 Path = list(N)
 
-_D={}
+Cost = 0
+path = []
+def pt(current,remaining):
+    global Cost
+    global path
+#    print(remaining)
+    if len(remaining)==1:
+        Cost+=DistKM[current,remaining[0]]
+        return None
+    nxt = remaining[0]
+    Best = 100000000
+    for i in remaining:
+       if DistKM[current,i]<Best:
+           Best = DistKM[current,i]
+           nxt = i
+    Cost+=Best
+    path.append(current)
+    remaining.remove(nxt)
+    pt(nxt,remaining)
+    
+#pt(0,[1,2,3,4,5])
+pt(0,list(N))
+print(Cost+((1.852**2)*math.pi*nLoc))
+print((Cost+((1.852**2)*math.pi*nLoc))/(55*1.85))
+print("KM of Transit",Cost)
+print("Time in Transit",Cost/(55*1.852))
+pylab.plot([Data[path[i]][1] for i in range(-1,nLoc-1)], [Data[path[i]][0] for i in range(-1,nLoc-1)])
+pylab.xlabel('Latitude(Degrees)')
+pylab.ylabel('Longitude (Degrees)')
+pylab.title('Greedy Technique')
+pylab.show()
 
 
 
-def D(stage,state,pred):
-#    print(stage)
-    if stage <= 1:
-#        print("DONE")
-        return (Data[state][0],state,0)
-        
-    if (stage,state,frozenset(pred)) not in _D:
-        _D[stage,state,frozenset(pred)] = min((Data[state][a] + D(stage-1,a,pred+[state])[0],state,a) for a in N if a not in pred and a != state)
-    return _D[stage,state,frozenset(pred)] 
-
-#_memo = {}
-#def ReFuel(Fuel,Position,Pred):
-#    if Fuel<=time(Position,0):
-#        return (DistKM[Position,0],Position,0,Fuel)
-#    if (Fuel,Position,frozenset(Pred)) not in _memo:
-#        
-#        
-
-
-print(D(10,0,[0]))
-print(time.time()-starttime,'seconds')
