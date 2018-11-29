@@ -7,38 +7,22 @@ Created on Sat Nov 24 14:26:19 2018
 import math
 import random
 import pylab
-
+from tqdm import tqdm
 
 class SimAnneal:
     
-    def __init__(self,Data=0,pts=0,Test = False):
-        print("Simulated Annealing Method Selected")
-        if Test:
-            print("Warning this is a test case!")
-            self.nLoc = 150
-            self.N = range(self.nLoc)
-            
-            Square = 1000
-            random.seed(self.nLoc)
-            self.Pos = [(random.randint(0,Square), random.randint(0,Square)) for i in self.N]
-            self.Data = [[self.Distance(self.Pos[i],self.Pos[j]) for j in self.N] for i in self.N]
-            self.Path = list(self.N)
-            
-        else:
-            self.Data = Data 
-            self.N = range(len(Data))
-            self.nLoc = len(Data)
-            self.Path = list(self.N)
-            self.Pos = pts
+    def __init__(self,Data,pts):
+        self.Data = Data 
+        self.N = range(len(pts))
+        self.nLoc = len(pts)
+        self.Path = list(self.N)
+        self.Pos = pts
         random.shuffle(self.Path)
         self.Randomcost = self.Cost()
             
-        
-    def Distance(self,p1, p2):
-        return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
 
     def Cost(self):
-        return sum(self.Data[self.Path[i-1]][self.Path[i]] for i in self.N)
+        return sum(self.Data[self.Path[i-1],self.Path[i]] for i in self.N)
     
 
     def ChooseNeigh(self):
@@ -53,7 +37,7 @@ class SimAnneal:
         a2 = self.Path[i]
         b1 = self.Path[j]    
         b2 = self.Path[(j+1)%self.nLoc]
-        return self.Data[a1][b1]+self.Data[a2][b2]-(self.Data[a1][a2]+self.Data[b1][b2]),(i,j)
+        return self.Data[a1,b1]+self.Data[a2,b2]-(self.Data[a1,a2]+self.Data[b1,b2]),(i,j)
 
     def MoveToNeigh(self,neigh):
         i,j = neigh
@@ -65,9 +49,7 @@ class SimAnneal:
         Best = E
         CostArr = [E]
         BestArr = [Best]
-        for i in range(run):
-            if i%10000==0:
-                print(int(i/run*100),"%")
+        for i in tqdm(range(run),ascii = True, desc = "Simulated Annealing"):
             delta,neighbour = self.ChooseNeigh()
             if delta < 0 or random.random() < math.exp(-delta/T):
                 self.MoveToNeigh(neighbour)
@@ -77,7 +59,7 @@ class SimAnneal:
             CostArr.append(E)
             BestArr.append(Best)
             T *= alpha
-        print (E)
+#        print (E)
         pylab.plot(range(run+1),CostArr)
         pylab.plot(range(run+1),BestArr)
         pylab.show()
