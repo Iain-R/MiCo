@@ -10,13 +10,14 @@ from GetData import Dataget
 Files = Dataget('poi.csv','32seg.csv','distances.csv')
 Files.read_all()
 
-print("Calculating {} points Using Simulated Annealing".format(Files.get_amount()))
 
 Distance = Files.get_distances()
 Data = Files.get_poi()
 
+
+print("Calculating {} points Using Simulated Annealing".format(Files.get_amount()))
 A = SimAnneal(Distance,Data)
 A.RunSA(1000000,90000,0.99995)
-
 A.printcost()
 A.Showroute()
+

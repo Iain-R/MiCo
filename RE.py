@@ -4,84 +4,26 @@ Created on Sun Nov 25 11:24:20 2018
 
 @author: Iain
 """
-
-
 import sys 
 sys.path.insert(0, 'C:\gurobi810\win64\python37\lib')
 import math
-import random
 import itertools
 from gurobipy import *
 import pylab
+from GetData import Dataget
 
 
-
-import csv
-Data = []
-with open('poi.csv', newline='') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    for row in spamreader:
-        if row[5]=="Latitude":
-            print("Starting Scrape")
-        else:
-            Data.append((float(row[5]),float(row[6]),float(row[7])))
-    print("There are ",len(Data),"Points")
-
-
-Seg = []
-with open('32seg.csv', newline='') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    for row in spamreader:
-        if row[0]=="Latitude":
-            print("Starting Scrape")
-        else:
-#            print(row[0])
-            Seg.append((row[0]))
-            
-    print("There are ",len(Data),"Points")
-    
-    
-DistKM = {}
-with open('distances.csv', newline='') as csvfile:
-    j=-1
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    for row in spamreader:
-        j+=1
-        if row[0]=="Latitude":
-            print("Starting Scrape")
-        else:
-#            print(row[0])
-            for i in range(len(row)):
-                DistKM[i,j]= float(row[i])
-#                print(float(row[i]))
-#print(Data[1])
-def SegmentSplit(a):
-    a = str(a)
-    Seg1 = []
-    seg1Dist = {}
-    q= -1
-    for i in range(len(Seg)):
-    #    print(i)
-        if Seg[i]== a:
-            Seg1.append(Data[i])
-            k = -1
-            q+=1
-            for j in range(len(Seg)):
-                if Seg[j] == a:
-                    k+=1
-                    if k<q:
-    #                    print(q,k)      
-                        seg1Dist[q,k] = DistKM[i,j]
-    return (Seg1,seg1Dist)
-
+Files = Dataget('poi.csv','32seg.csv','distances.csv')
+Files.read_all()
+Distance = Files.get_distances()
+Data = Files.get_poi()
 COST = 0
 TIME = 0
 for i in range(31):
     Flight = i+1
-    n = int(len(SegmentSplit(Flight)[0]))
-    
-    seg1Dist = SegmentSplit(Flight)[1]
-    Seg1 = SegmentSplit(Flight)[0]
+    n = int(len(Files.SegmentSplit(Flight)[0]))
+    seg1Dist = Files.SegmentSplit(Flight)[1]
+    Seg1 = Files.SegmentSplit(Flight)[0]
     
 #    print(Seg1)
     # Callback - use lazy constraints to eliminate sub-tours
